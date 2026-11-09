@@ -35,11 +35,22 @@ public_users.get('/', async function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     const isbn = req.params.isbn;
-    if (books[isbn]) {
-        return res.status(200).json(books[isbn]);
-    } else {
-        return res.status(404).json({ message: "Book not found" });
-    }
+
+    const getBook = new Promise((resolve, reject) => {
+        if (books[isbn]) {
+            resolve(books[isbn]);
+        } else {
+            reject({ status: 404, message: "Book not found" });
+        }
+    });
+
+    getBook
+        .then((book) => {
+            return res.status(200).json(book);
+        })
+        .catch((err) => {
+        return res.status(err.status || 500).json({ message: err.message });
+        });
 });
   
 // Get book details based on author
