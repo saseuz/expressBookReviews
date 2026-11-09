@@ -23,18 +23,13 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-    const getBooks = new Promise((resolve, reject) => {
-    resolve(books);
-    });
-
-    getBooks
-    .then((bookList) => {
-        return res.status(200).send(JSON.stringify(bookList, null, 4));
-    })
-    .catch((error) => {
-        return res.status(500).json({ message: "Error retrieving books", error: error.message });
-    });
+public_users.get('/', async function (req, res) {
+    try {
+        const response = await axios.get('http://localhost:5000/');
+        return res.status(200).json(response.data);
+    } catch (error) {
+        return res.status(200).send(JSON.stringify(books, null, 4));
+    }
 });
 
 // Get book details based on ISBN
